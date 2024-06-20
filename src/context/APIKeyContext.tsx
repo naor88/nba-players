@@ -23,7 +23,7 @@ export const APIKeyProvider: React.FC<{ children: ReactNode }> = ({
   const [isValidating, setIsValidating] = useState<boolean>(true);
 
   useEffect(() => {
-    const storedKey = ls.get<string>("apiKey");
+    const storedKey = ls.get("apiKey");
     if (storedKey) {
       validateApiKey(storedKey).then((isValid) => {
         if (isValid) {
