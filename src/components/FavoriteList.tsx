@@ -18,7 +18,6 @@ export const FavoriteListTest = () => {
 };
 
 export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
-  console.log("FavoriteList.favorites", favorites);
   const queryClient = useQueryClient();
   const [nextCursor, setNextCursor] = useState<number>(initiateCurser);
   const [itemsPerPage, setItemsPerPage] = useState(initiateItemsPerPage);
@@ -123,11 +122,6 @@ export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
     itemsPerPage,
     favorites,
   ]);
-
-  useEffect(() => {
-    console.log("favorites: ", favorites);
-    console.log("players: ", players);
-  }, [favorites]);
 
   return (
     <PlayersDialog

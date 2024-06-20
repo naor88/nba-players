@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPlayersData } from "../api";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchPlayersData, PlayersInfoResponse } from "../api";
 import { IMeta, IPlayer } from "../types";
 
 import useDebounce from "../hooks/useDebounce";
@@ -14,6 +14,8 @@ export const PlayerManagement = () => {
   const [itemsPerPage, setItemsPerPage] = useState(initiateItemsPerPage);
   const [queryStr, setQueryStr] = useState("");
   const debouncedQueryStr = useDebounce(queryStr, debouncedDelay);
+  const [isNextPageDisabled, setIsNextPageDisabled] = useState(true);
+
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["fetchPlayersData", nextCursor, itemsPerPage, debouncedQueryStr],
     queryFn: () =>
@@ -22,22 +24,45 @@ export const PlayerManagement = () => {
 
   const players: IPlayer[] | undefined = data?.data;
   const meta: IMeta | undefined = data?.meta;
-  const isNextPageDisabled = meta?.next_cursor == undefined;
   const isPreviousPageDisabled = meta?.prev_cursor == undefined;
 
+  const prefetchPlayersData = async (
+    queryClient: QueryClient,
+    meta: IMeta,
+    itemsPerPage: number,
+    debouncedQueryStr: string
+  ) => {
+    await queryClient.prefetchQuery({
+      staleTime: 1000 * 60,
+      queryKey: [
+        "fetchPlayersData",
+        meta?.next_cursor,
+        itemsPerPage,
+        debouncedQueryStr,
+      ],
+      queryFn: () =>
+        fetchPlayersData(meta?.next_cursor, itemsPerPage, debouncedQueryStr),
+    });
+
+    const prefetchedData: PlayersInfoResponse | undefined =
+      queryClient.getQueryData([
+        "fetchPlayersData",
+        meta?.next_cursor,
+        itemsPerPage,
+        debouncedQueryStr,
+      ]);
+    if (prefetchedData?.data && prefetchedData.data.length > 0) {
+      setIsNextPageDisabled(false);
+    } else {
+      setIsNextPageDisabled(true);
+    }
+  };
+
   useEffect(() => {
-    if (!isNextPageDisabled) {
-      queryClient.prefetchQuery({
-        staleTime: 1000 * 60,
-        queryKey: [
-          "fetchPlayersData",
-          meta?.next_cursor,
-          itemsPerPage,
-          debouncedQueryStr,
-        ],
-        queryFn: () =>
-          fetchPlayersData(meta?.next_cursor, itemsPerPage, debouncedQueryStr),
-      });
+    if (meta?.next_cursor) {
+      prefetchPlayersData(queryClient, meta, itemsPerPage, debouncedQueryStr);
+    } else {
+      setIsNextPageDisabled(true);
     }
   }, [
     queryClient,

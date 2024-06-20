@@ -12,6 +12,7 @@ interface APIKeyContextProps {
   apiKey: string | null;
   setApiKey: (key: string) => void;
   isValidating: boolean;
+  removeApiKey: () => void;
 }
 
 const APIKeyContext = createContext<APIKeyContextProps | undefined>(undefined);
@@ -49,8 +50,15 @@ export const APIKeyProvider: React.FC<{ children: ReactNode }> = ({
     });
   };
 
+  const removeApiKey = () => {
+    ls.remove("apiKey");
+    setApiKeyState(null);
+  };
+
   return (
-    <APIKeyContext.Provider value={{ apiKey, setApiKey, isValidating }}>
+    <APIKeyContext.Provider
+      value={{ apiKey, setApiKey, isValidating, removeApiKey }}
+    >
       {children}
     </APIKeyContext.Provider>
   );

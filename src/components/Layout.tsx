@@ -1,12 +1,19 @@
 import { PropsWithChildren, useState } from "react";
-import { CiSettings } from "react-icons/ci";
+import { CiLogout } from "react-icons/ci";
+import { useApiKey } from "../hooks/useApiKey";
 import Header from "./Header";
 
 export const Layout = ({ children }: PropsWithChildren) => {
+  const { removeApiKey } = useApiKey();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+  };
+
+  const handelLogout = (event: React.MouseEvent) => {
+    event.preventDefault();
+    removeApiKey();
   };
 
   return (
@@ -27,10 +34,13 @@ export const Layout = ({ children }: PropsWithChildren) => {
           ></label>
           <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
             {/* Sidebar content here */}
-            <li className="btn btn-primary m-2" onClick={toggleModal}>
-              <a>
-                Settings <CiSettings />
-              </a>
+            <li
+              className="btn btn-primary m-2"
+              onClick={handelLogout}
+            >
+              <span>
+                Logout <CiLogout />
+              </span>
             </li>
           </ul>
         </div>

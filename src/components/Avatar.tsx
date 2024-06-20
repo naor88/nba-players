@@ -13,29 +13,28 @@ const Avatar: React.FC<AvatarProps> = ({ player }) => {
   const handleError = () => {
     setHasError(true);
   };
+  const fetchImageURL = async () => {
+    try {
+      const urls = await getPlayerAvatar(player);
+      setImageURL(urls.strCutout);
+    } catch (error) {
+      console.error("Failed to fetch player avatar:", error);
+      // setImageURL("/profile-user-icon.jpg");
+      setHasError(true);
+    }
+  };
 
   useEffect(() => {
-    const fetchImageURL = async () => {
-      try {
-        const urls = await getPlayerAvatar(player);
-        setImageURL(urls.strCutout);
-      } catch (error) {
-        console.error("Failed to fetch player avatar:", error);
-        // setImageURL("/profile-user-icon.jpg");
-        setHasError(true);
-      }
-    };
+    fetchImageURL();
+  }, []);
 
+  useEffect(() => {
     fetchImageURL();
   }, [player]);
 
-  if (hasError) {
-    return <img src={profileImg} />;
-  }
-
   return (
     <img
-      src={hasError || !imageURL ? "/profile-user-icon.jpg" : imageURL}
+      src={hasError || !imageURL ? profileImg : imageURL}
       alt="Avatar Profile Image"
       onError={handleError}
     />
