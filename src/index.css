@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Custom class to disable hover effect */
+.no-hover:hover {
+  background-color: transparent; /* Override background color change on hover */
+  border-color: inherit; /* Keep the border color the same on hover */
+  color: inherit; /* Keep the text color the same on hover */
+}
+
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
