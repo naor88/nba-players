@@ -1,4 +1,3 @@
-// FavoriteContext.tsx
 import React, {
   createContext,
   useContext,

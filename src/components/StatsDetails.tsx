@@ -1,5 +1,5 @@
 import { IStats } from "../types";
-import { statsMeaningMapping, toPascalCaseWithSpaces } from "../utils";
+import { statsMeaningMapping } from "../utils";
 import { emptyState } from "./PlayersDialog";
 
 interface StatsDetailsProps {
