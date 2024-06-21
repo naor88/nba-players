@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import profileImg from "../assets/profile-user-icon.jpg";
 import { IPlayer } from "../types";
 import usePlayerImages from "../hooks/usePlayerImages";
@@ -18,45 +18,23 @@ const Avatar: React.FC<AvatarProps> = ({
   renderImg,
   thumbImg,
 }) => {
-  const [hasError, setHasError] = useState(false);
-  const [imageURL, setImageURL] = useState("");
+  const playerImage = usePlayerImages(player);
 
-  const handleError = () => {
-    setHasError(true);
-  };
+  let finalUrl = profileImg;
+  if (playerImage && !playerImage.error && playerImage.url) {
+    if (cutoutImg && playerImage.url.strCutout) {
+      finalUrl = playerImage.url.strCutout;
+    } else if (renderImg && playerImage.url.strRender) {
+      finalUrl = playerImage.url.strRender;
+    } else if (thumbImg && playerImage.url.strThumb) {
+      finalUrl = playerImage.url.strThumb;
+    }
+  }
 
-  useEffect(() => {
-    usePlayerImages([player]).then((playerImages) => {
-      const playerImage =
-        playerImages && playerImages.length ? playerImages[0] : undefined;
-      if (playerImage && !playerImage.loading && !playerImage.error) {
-        const urls = playerImage.url;
-        if (urls) {
-          if (cutoutImg && urls.strCutout) {
-            setImageURL(urls.strCutout);
-          } else if (renderImg && urls.strRender) {
-            setImageURL(urls.strRender);
-          } else if (thumbImg && urls.strThumb) {
-            setImageURL(urls.strThumb);
-          } else {
-            setHasError(true);
-          }
-        } else {
-          setHasError(true);
-        }
-      } else {
-        setHasError(true);
-      }
-    });
-  }, [player]);
+  console.log("user image: " + playerImage.url?.strCutout);
 
   return (
-    <img
-      className={className}
-      src={hasError || !imageURL ? profileImg : imageURL}
-      alt="Avatar Profile Image"
-      onError={handleError}
-    />
+    <img className={className} src={finalUrl} alt="Avatar Profile Image" />
   );
 };
 

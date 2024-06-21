@@ -1,5 +1,6 @@
 import { IPlayer } from "../types";
 import { getPlayerAvatar } from "../utils";
+import { useQuery } from "@tanstack/react-query";
 
 export interface IPlayerImage {
   id: number;
@@ -12,44 +13,18 @@ export interface IPlayerImage {
   error: Error | null;
 }
 
-const usePlayerImages = (players: IPlayer[]) => {
-  const fetchImages = async () => {
-    const newImages = [
-      ...players.map(
-        (player) =>
-          ({
-            id: player.id,
-            url: null,
-            loading: true,
-            error: null,
-          } as IPlayerImage)
-      ),
-    ];
+const usePlayerImages = (player: IPlayer): IPlayerImage => {
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["getPlayerAvatar", player.id],
+    queryFn: () => getPlayerAvatar(player),
+  });
 
-    for (const player of players) {
-      const imageIndex = newImages.findIndex((img) => img.id === player.id);
-      try {
-        const imageURLs = await getPlayerAvatar(player);
-        newImages[imageIndex] = {
-          id: player.id,
-          url: imageURLs,
-          loading: false,
-          error: null,
-        };
-      } catch (error) {
-        newImages[imageIndex] = {
-          id: player.id,
-          url: null,
-          loading: false,
-          error: new Error("Failed to fetch player avatar."),
-        };
-      }
-    }
-
-    return newImages;
+  return {
+    id: player.id,
+    url: data || null,
+    loading: isLoading,
+    error: isError ? error : null,
   };
-
-  return fetchImages();
 };
 
 export default usePlayerImages;
