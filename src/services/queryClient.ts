@@ -1,5 +1,10 @@
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 
+// A function to handle errors by throwing them, so the ErrorBoundary can catch them
+const handleError = (error: Error) => {
+  throw error;
+};
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -9,8 +14,7 @@ export const queryClient = new QueryClient({
   },
   queryCache: new QueryCache({
     onError: (error) => {
-      // setError(error);
-      console.error(error);
+      handleError(error);
     },
   }),
 });
