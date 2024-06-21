@@ -15,10 +15,11 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { useApiKey } from "./hooks/useApiKey";
 import ApiKeyInput from "./components/ApiKeyInput";
 import { FetchError } from "./types";
+import { Spinner } from "./components/Spinner";
 
 function App() {
   const isOnline = useOnlineStatus();
-  const { apiKey, setApiKey } = useApiKey();
+  const { apiKey, isValidating, setApiKey } = useApiKey();
   const [error, setError] = useState<Error | undefined>();
 
   const queryClient = new QueryClient({
@@ -37,6 +38,14 @@ function App() {
 
   if (!isOnline) {
     return <NoInternetPage />;
+  }
+
+  if (isValidating) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
   }
 
   if (!apiKey) {
