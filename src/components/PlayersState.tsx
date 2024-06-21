@@ -166,8 +166,8 @@ export const PlayersStates = ({
 
   return (
     <>
-      <div className="my-2 mx-auto">
-        <table className="text-center">
+      <div className="my-2 mx-auto w-full">
+        <table className="text-center w-full">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
