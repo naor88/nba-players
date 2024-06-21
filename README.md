@@ -27,6 +27,7 @@ The NBA Players Tracker is a web application designed to showcase the ability to
 - **React Secure Storage**: Secure storage for sensitive data.
 - **Vite**: A fast build tool for modern web projects.
 - **TypeScript**: A strongly typed programming language that builds on JavaScript.
+- **Netlify**: Used for deploying the application with continuous deployment support.
 
 ## Installation
 
@@ -56,33 +57,41 @@ The NBA Players Tracker is a web application designed to showcase the ability to
    ```
 
 ## Demo
+
 Check out the live demo: [NBA Players Tracker](https://main--nba-players-tracker.netlify.app)
 
+The application is deployed on Netlify, providing a fast and reliable hosting solution with continuous deployment from GitHub.
+
 ## Screenshots
+
 ![NBA Players Tracker](docs/FullScreen.png)
 ![ResponsiveDesign](docs/ResponsiveDesign.png)
 ![PlayerDetails](docs/PlayerDetails.png)
 ![PlayerDetails](docs/PlayerDetailsRodman.png)
 
 ## Project Demo Recording
-[<img src="docs/PlayVideo.png">](https://share.vidyard.com/watch/LsuJSkjZuShLpaticKVQwS?)
 
+[<img src="docs/PlayVideo.png">](https://share.vidyard.com/watch/6knLBSQBV2SRUvfyxzEJVQ?)
 
 ### API Documentation
+
 - [TheSportsDB](https://www.thesportsdb.com/free_sports_api)
 - [BallDontLie](https://docs.balldontlie.io/#introduction)
 - [RoboHash](https://robohash.org/)
 
 ## Goals
+
 The goal of this project is to demonstrate proficiency in:
+
 - Working with multiple APIs and handling asynchronous data fetching.
 - Implementing efficient state management and data caching.
 - Creating a responsive and user-friendly interface.
 - Utilizing modern web development tools and libraries.
 
 ## Contributing
+
 Contributions are welcome! Please open an issue or submit a pull request for any features, bugs, or improvements.
 
 ## License
-This project is licensed under the MIT License
 
+This project is licensed under the MIT License
