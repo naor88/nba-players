@@ -96,7 +96,6 @@ export const PlayersDialog = ({
     ?.map((player) => {
       const state: IStats =
         playersState?.find((s) => s.player_id == player.id) || emptyState;
-
       return {
         player,
         state,
@@ -104,7 +103,6 @@ export const PlayersDialog = ({
     });
 
   if (players.length == 0 && isPreviousPageDisabled == false) {
-    debugger;
     handlePreviousPage();
   }
 

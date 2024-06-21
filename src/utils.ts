@@ -2,7 +2,7 @@ import { fetchPlayerImage } from "./api";
 import { IPlayer } from "./types";
 
 export const initiateCurser = 0;
-export const initiateItemsPerPage = 25;
+export const initiateItemsPerPage = 1;//25;
 export const debouncedDelay = 500;
 
 export const getPlayerAvatar = async (

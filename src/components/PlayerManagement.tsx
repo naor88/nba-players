@@ -19,9 +19,10 @@ export const PlayerManagement = () => {
     queryFn: () => fetchPlayersData(nextCursor, itemsPerPage, deferredQueryStr),
   });
 
-  const players: IPlayer[] | undefined = data?.data;
+  const players: IPlayer[] = data?.data || [];
   const meta: IMeta | undefined = data?.meta;
   const isPreviousPageDisabled = meta?.prev_cursor == undefined;
+
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setQueryStr(event.target.value);

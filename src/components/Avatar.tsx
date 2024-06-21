@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { IPlayer } from "../types";
-import { getPlayerAvatar } from "../utils";
+import React, { useEffect, useState, useCallback } from "react";
 import profileImg from "../assets/profile-user-icon.jpg";
+import { IPlayer } from "../types";
+import usePlayerImages, { IPlayerImage } from "../hooks/usePlayerImages";
+
 interface AvatarProps {
   className?: string;
   player: IPlayer;
@@ -23,25 +24,30 @@ const Avatar: React.FC<AvatarProps> = ({
   const handleError = () => {
     setHasError(true);
   };
-  const fetchImageURL = async () => {
-    try {
-      const urls = await getPlayerAvatar(player);
-      if (cutoutImg && urls?.strCutout) setImageURL(urls.strCutout);
-      else if (renderImg && urls?.strRender) setImageURL(urls?.strRender);
-      else if (thumbImg && urls?.strThumb) setImageURL(urls?.strThumb);
-      else setHasError(true);
-    } catch (error) {
-      console.error("Failed to fetch player avatar:", error);
-      setHasError(true);
-    }
-  };
 
   useEffect(() => {
-    fetchImageURL();
-  }, []);
-
-  useEffect(() => {
-    fetchImageURL();
+    usePlayerImages([player]).then((playerImages) => {
+      const playerImage =
+        playerImages && playerImages.length ? playerImages[0] : undefined;
+      if (playerImage && !playerImage.loading && !playerImage.error) {
+        const urls = playerImage.url;
+        if (urls) {
+          if (cutoutImg && urls.strCutout) {
+            setImageURL(urls.strCutout);
+          } else if (renderImg && urls.strRender) {
+            setImageURL(urls.strRender);
+          } else if (thumbImg && urls.strThumb) {
+            setImageURL(urls.strThumb);
+          } else {
+            setHasError(true);
+          }
+        } else {
+          setHasError(true);
+        }
+      } else {
+        setHasError(true);
+      }
+    });
   }, [player]);
 
   return (

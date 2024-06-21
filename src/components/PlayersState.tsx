@@ -15,10 +15,12 @@ import { emptyState } from "./PlayersDialog";
 import { VscPassFilled, VscError } from "react-icons/vsc";
 import { Modal } from "./Modal";
 import { PlayerDetails } from "./PlayerDetails";
+import { IPlayerImage } from "../hooks/usePlayerImages";
 
 export type PlayersStatesRowData = {
   player: IPlayer;
   state: IStats;
+  playerImage?: IPlayerImage
 };
 
 const columnHelper = createColumnHelper<PlayersStatesRowData>();

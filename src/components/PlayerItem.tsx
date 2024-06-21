@@ -5,7 +5,6 @@ import HighlightText from "./HighlightText";
 import { Modal } from "./Modal";
 import { PlayerDetails } from "./PlayerDetails";
 import { useFavorites } from "../hooks/useFavorites";
-
 interface PlayerItemProps {
   player: IPlayer;
   queryStr: string;
@@ -39,7 +38,7 @@ export const PlayerItem = ({ player, queryStr }: PlayerItemProps) => {
             <div className="cursor-pointer flex items-center">
               <div className="avatar">
                 <div className="mask mask-circle w-12 h-12 bg-white">
-                  <Avatar player={player} cutoutImg/>
+                  <Avatar player={player} cutoutImg />
                 </div>
                 <div className="mx-2">
                   <div className="font-bold">
