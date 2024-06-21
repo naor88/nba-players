@@ -20,7 +20,7 @@ import { IPlayerImage } from "../hooks/usePlayerImages";
 export type PlayersStatesRowData = {
   player: IPlayer;
   state: IStats;
-  playerImage?: IPlayerImage
+  playerImage?: IPlayerImage;
 };
 
 const columnHelper = createColumnHelper<PlayersStatesRowData>();
@@ -148,7 +148,6 @@ export const PlayersStates = ({
         <div className="flex justify-center">
           <button
             onClick={() => {
-              // console.log(`UnFollow`, info.row.original.player.id);
               handleRemoveFavorite(info.row.original.player.id);
             }}
           >

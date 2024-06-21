@@ -51,8 +51,6 @@ export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
     enabled: favorites && favorites.length > 0,
   });
 
-  // console.log("playersStateQuery");
-  // console.log(playersStateQuery.data);
   const players: IPlayer[] =
     favorites && favorites.length > 0 ? playersDataQuery?.data?.data || [] : [];
   const meta: IMeta | undefined =

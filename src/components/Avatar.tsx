@@ -31,8 +31,6 @@ const Avatar: React.FC<AvatarProps> = ({
     }
   }
 
-  console.log("user image: " + playerImage.url?.strCutout);
-
   return (
     <img className={className} src={finalUrl} alt="Avatar Profile Image" />
   );
