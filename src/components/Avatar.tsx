@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React from "react";
 import profileImg from "../assets/profile-user-icon.jpg";
 import { IPlayer } from "../types";
 import usePlayerImages from "../hooks/usePlayerImages";
