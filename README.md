@@ -64,8 +64,8 @@ Check out the live demo: [NBA Players Tracker](https://main--nba-players-tracker
 ![PlayerDetails](docs/PlayerDetails.png)
 ![PlayerDetails](docs/PlayerDetailsRodman.png)
 
-## Record demo from the project:
-[<img src="https://play.vidyard.com/LsuJSkjZuShLpaticKVQwS.jpg">](https://share.vidyard.com/watch/LsuJSkjZuShLpaticKVQwS?)
+## Project Demo Recording
+[<img src="docs/PlayVideo.png">](https://share.vidyard.com/watch/LsuJSkjZuShLpaticKVQwS?)
 
 
 ### API Documentation
