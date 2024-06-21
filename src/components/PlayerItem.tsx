@@ -25,7 +25,7 @@ export const PlayerItem = ({ player, queryStr }: PlayerItemProps) => {
       </Modal>
       <div className="grid grid-cols-5 max-h-20">
         <div
-          className="cursor-pointer"
+          className="cursor-pointer col-span-2"
           onClick={() => {
             handleFavoriteToggle(player.id);
           }}
@@ -36,7 +36,7 @@ export const PlayerItem = ({ player, queryStr }: PlayerItemProps) => {
             <MdFavoriteBorder size={30} />
           )}
         </div>
-        <div className="col-span-4">
+        <div className="col-span-3">
           <label htmlFor={modalId}>
             <div className="cursor-pointer flex items-center">
               <div className="avatar">

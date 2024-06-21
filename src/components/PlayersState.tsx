@@ -11,6 +11,8 @@ import { MdDeleteForever } from "react-icons/md";
 import { useFavorites } from "../hooks/useFavorites";
 import Avatar from "./Avatar";
 import HighlightText from "./HighlightText";
+import { emptyState } from "./PlayersDialog";
+import { VscPassFilled, VscError } from "react-icons/vsc";
 
 export type PlayersStatesRowData = {
   player: IPlayer;
@@ -23,6 +25,8 @@ interface PlayersStatesProps {
   playersInfo: PlayersStatesRowData[];
   queryStr: string;
 }
+
+const NO_INFO_STR = ""; //N/A
 
 export const PlayersStates = ({
   playersInfo,
@@ -43,10 +47,10 @@ export const PlayersStates = ({
   };
 
   const columns = [
-    columnHelper.accessor("player.id", {
-      cell: (info) => info.getValue(),
-      header: () => <span>Id</span>,
-    }),
+    // columnHelper.accessor("player.id", {
+    //   cell: (info) => info.getValue(),
+    //   header: () => <span>Id</span>,
+    // }),
     {
       id: "playerImage",
       cell: (info: CellContext<PlayersStatesRowData, ReactNode>) => (
@@ -55,6 +59,19 @@ export const PlayersStates = ({
         </div>
       ),
       header: () => <span>Image</span>,
+    },
+    {
+      id: "inSeason",
+      cell: (info: CellContext<PlayersStatesRowData, ReactNode>) => (
+        <div className="flex justify-center max-h-36 max-w-32">
+          {info.row.original.state !== emptyState ? (
+            <VscPassFilled color="green" />
+          ) : (
+            <VscError color="red" />
+          )}
+        </div>
+      ),
+      header: () => <span>InSeason</span>,
     },
     columnHelper.accessor("player.first_name", {
       cell: (info) => (
@@ -70,37 +87,55 @@ export const PlayersStates = ({
     }),
     columnHelper.accessor((row) => row.state?.pts, {
       id: "pts",
-      cell: (info) => parseFloat(info.getValue() + "").toFixed(1) || "N/A",
+      cell: (info) =>
+        info.getValue()
+          ? parseFloat(info.getValue() + "").toFixed(1)
+          : NO_INFO_STR,
       header: () => <span>Points</span>,
     }),
     columnHelper.accessor((row) => row.state?.ast, {
       id: "ast",
-      cell: (info) => parseFloat(info.getValue() + "").toFixed(1) || "N/A",
+      cell: (info) =>
+        info.getValue()
+          ? parseFloat(info.getValue() + "").toFixed(1)
+          : NO_INFO_STR,
       header: () => <span>Assists</span>,
     }),
     columnHelper.accessor((row) => row.state?.reb, {
       id: "reb",
-      cell: (info) => parseFloat(info.getValue() + "").toFixed(1) || "N/A",
+      cell: (info) =>
+        info.getValue()
+          ? parseFloat(info.getValue() + "").toFixed(1)
+          : NO_INFO_STR,
       header: () => <span>Rebounds</span>,
     }),
     columnHelper.accessor((row) => row.state?.fg_pct, {
       id: "fg_pct",
-      cell: (info) => parseFloat(info.getValue() + "").toFixed(1) || "N/A",
+      cell: (info) =>
+        info.getValue()
+          ? parseFloat(info.getValue() + "").toFixed(1)
+          : NO_INFO_STR,
       header: () => <span>Field Goal Percentage</span>,
     }),
     columnHelper.accessor((row) => row.state?.games_played, {
       id: "games_played",
-      cell: (info) => parseFloat(info.getValue() + "").toFixed(1) || "N/A",
+      cell: (info) =>
+        info.getValue()
+          ? parseFloat(info.getValue() + "").toFixed(1)
+          : NO_INFO_STR,
       header: () => <span>Games Played</span>,
     }),
     columnHelper.accessor((row) => row.state?.min, {
       id: "min",
-      cell: (info) => parseFloat(info.getValue() + "").toFixed(1) || "N/A",
+      cell: (info) => info.getValue() || NO_INFO_STR,
       header: () => <span>Minutes Played</span>,
     }),
     columnHelper.accessor((row) => row.state?.stl, {
       id: "stl",
-      cell: (info) => parseFloat(info.getValue() + "").toFixed(1) || "N/A",
+      cell: (info) =>
+        info.getValue()
+          ? parseFloat(info.getValue() + "").toFixed(1)
+          : NO_INFO_STR,
       header: () => <span>Steals</span>,
     }),
     {

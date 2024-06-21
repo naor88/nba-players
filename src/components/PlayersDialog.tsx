@@ -8,7 +8,7 @@ import { IMeta, IPlayer, IStats } from "../types";
 import { PlayersStates, PlayersStatesRowData } from "./PlayersState";
 import { useFavorites } from "../hooks/useFavorites";
 
-const emptyState: IStats = {
+export const emptyState: IStats = {
   pts: 0,
   ast: 0,
   turnover: 0,

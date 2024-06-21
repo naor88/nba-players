@@ -14,9 +14,9 @@ export const PlayerList = ({
   return (
     <div className="container p-4 max-w-96">
       <div>
-        <div className="grid grid-cols-5">
-          <div>Favorite</div>
-          <div className="col-span-4">Player</div>
+        <div className="grid grid-cols-5 mb-3 font-bold">
+          <div className="col-span-2">Favorite</div>
+          <div className="col-span-3">Player</div>
         </div>
         {players?.map((player) => {
           const playerState = playersState?.find(
