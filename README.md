@@ -1,6 +1,6 @@
 # NBA Players Tracker
 
-![NBA Players Tracker](docs\FullScreen.png)
+![NBA Players Tracker](docs/FullScreen.png)
 
 ## Overview
 
@@ -59,10 +59,10 @@ The NBA Players Tracker is a web application designed to showcase the ability to
 Check out the live demo: [NBA Players Tracker](https://main--nba-players-tracker.netlify.app)
 
 ## Screenshots
-![NBA Players Tracker](docs\FullScreen.png)
-![ResponsiveDesign](docs\ResponsiveDesign.png)
-![PlayerDetails](docs\PlayerDetails.png)
-![PlayerDetails](docs\PlayerDetailsRodman.png)
+![NBA Players Tracker](docs/FullScreen.png)
+![ResponsiveDesign](docs/ResponsiveDesign.png)
+![PlayerDetails](docs/PlayerDetails.png)
+![PlayerDetails](docs/PlayerDetailsRodman.png)
 
 ## Record demo from the project:
 [<img src="https://play.vidyard.com/LsuJSkjZuShLpaticKVQwS.jpg">](https://share.vidyard.com/watch/LsuJSkjZuShLpaticKVQwS?)
