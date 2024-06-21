@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import profileImg from "../assets/profile-user-icon.jpg";
 import { IPlayer } from "../types";
-import usePlayerImages, { IPlayerImage } from "../hooks/usePlayerImages";
+import usePlayerImages from "../hooks/usePlayerImages";
 
 interface AvatarProps {
   className?: string;

@@ -5,15 +5,13 @@ import { toPascalCaseWithSpaces } from "../utils";
 import Avatar from "./Avatar";
 import { TeamDetails } from "./TeamDetails";
 import { StatsDetails } from "./StatsDetails";
-import { IPlayerImage } from "../hooks/usePlayerImages";
 
 interface PlayerDetailsProps {
   player: IPlayer;
   stats?: IStats;
-  playerImage?: IPlayerImage;
 }
 
-export const PlayerDetails = ({ player, stats, playerImage }: PlayerDetailsProps) => {
+export const PlayerDetails = ({ player, stats }: PlayerDetailsProps) => {
   const { handleFavoriteToggle, isFavorite } = useFavorites();
   return (
     <div className="max-w-4xl mx-auto p-4">
