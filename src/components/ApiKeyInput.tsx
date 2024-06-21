@@ -23,7 +23,7 @@ const ApiKeyInput: React.FC = () => {
               </label>
               <input
                 id="key_input"
-                type="text"
+                type="password"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Enter API key"
