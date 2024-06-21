@@ -1,6 +1,7 @@
 import { ChangeEvent, ReactNode, useState } from "react";
 import { FaArrowAltCircleRight } from "react-icons/fa";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 import { PlayerList } from "./PlayerList";
 import { renderContent } from "./renderContent";
 import { IMeta, IPlayer, IStats } from "../types";
@@ -38,6 +39,7 @@ interface PlayersDialogProps {
   setNextCursor: (nextCursor: number) => void;
   nextCursor: number;
   queryStr: string;
+  setQueryStr: (query: string) => void;
   onSearch: (event: ChangeEvent<HTMLInputElement>) => void;
   isPreviousPageDisabled: boolean;
   itemsPerPage: number;
@@ -59,6 +61,7 @@ export const PlayersDialog = ({
   setNextCursor,
   nextCursor,
   queryStr,
+  setQueryStr,
   onSearch,
   isPreviousPageDisabled,
   itemsPerPage,
@@ -119,6 +122,7 @@ export const PlayersDialog = ({
                 value={queryStr}
                 onChange={onSearch}
               />
+              {queryStr && <IoMdCloseCircleOutline className="cursor-pointer" onClick={()=>setQueryStr('')}/>}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
@@ -186,7 +190,7 @@ export const PlayersDialog = ({
           children:
             players && players?.length > 0 ? (
               playersState ? (
-                <PlayersStates playersInfo={playersInfo} />
+                <PlayersStates playersInfo={playersInfo} queryStr={queryStr}/>
               ) : (
                 <PlayerList players={players} queryStr={queryStr} />
               )

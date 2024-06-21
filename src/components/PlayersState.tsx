@@ -10,6 +10,7 @@ import { IPlayer, IStats } from "../types";
 import { MdDeleteForever } from "react-icons/md";
 import { useFavorites } from "../hooks/useFavorites";
 import Avatar from "./Avatar";
+import HighlightText from "./HighlightText";
 
 export type PlayersStatesRowData = {
   player: IPlayer;
@@ -20,9 +21,13 @@ const columnHelper = createColumnHelper<PlayersStatesRowData>();
 
 interface PlayersStatesProps {
   playersInfo: PlayersStatesRowData[];
+  queryStr: string;
 }
 
-export const PlayersStates = ({ playersInfo }: PlayersStatesProps) => {
+export const PlayersStates = ({
+  playersInfo,
+  queryStr,
+}: PlayersStatesProps) => {
   const { removeFavorite } = useFavorites();
   const [data, setData] = useState(playersInfo);
 
@@ -52,11 +57,15 @@ export const PlayersStates = ({ playersInfo }: PlayersStatesProps) => {
       header: () => <span>Image</span>,
     },
     columnHelper.accessor("player.first_name", {
-      cell: (info) => info.getValue(),
+      cell: (info) => (
+        <HighlightText text={info.getValue()} highlight={queryStr} />
+      ),
       header: () => <span>First Name</span>,
     }),
     columnHelper.accessor("player.last_name", {
-      cell: (info) => info.getValue(),
+      cell: (info) => (
+        <HighlightText text={info.getValue()} highlight={queryStr} />
+      ),
       header: () => <span>Last Name</span>,
     }),
     columnHelper.accessor((row) => row.state?.pts, {

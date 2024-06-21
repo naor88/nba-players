@@ -7,7 +7,7 @@ import {
 } from "../api";
 import { IMeta, IPlayer } from "../types";
 import { PlayersDialog } from "./PlayersDialog";
-import useDebounce from "../hooks/useDebounce";
+import { useDebounce } from "../hooks/useDebounce";
 
 import { debouncedDelay, initiateCurser, initiateItemsPerPage } from "../utils";
 import { useFavorites } from "../hooks/useFavorites";
@@ -130,6 +130,7 @@ export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
       setNextCursor={setNextCursor}
       nextCursor={nextCursor}
       queryStr={queryStr}
+      setQueryStr={setQueryStr}
       onSearch={(event: ChangeEvent<HTMLInputElement>) => {
         setQueryStr(event.target.value);
         setNextCursor(initiateCurser);

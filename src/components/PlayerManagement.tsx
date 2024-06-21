@@ -2,35 +2,37 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPlayersData, PlayersInfoResponse } from "../api";
 import { IMeta, IPlayer } from "../types";
-
-import useDebounce from "../hooks/useDebounce";
-
 import { PlayersDialog } from "./PlayersDialog";
-import { debouncedDelay, initiateCurser, initiateItemsPerPage } from "../utils";
+import { initiateCurser, initiateItemsPerPage, debouncedDelay } from "../utils";
+import { useDebounce } from "../hooks/useDebounce";
 
 export const PlayerManagement = () => {
   const queryClient = useQueryClient();
   const [nextCursor, setNextCursor] = useState<number>(initiateCurser);
   const [itemsPerPage, setItemsPerPage] = useState(initiateItemsPerPage);
   const [queryStr, setQueryStr] = useState("");
-  const debouncedQueryStr = useDebounce(queryStr, debouncedDelay);
+  const deferredQueryStr = useDebounce(queryStr, debouncedDelay);
   const [isNextPageDisabled, setIsNextPageDisabled] = useState(true);
 
   const { isLoading, isError, error, data } = useQuery({
-    queryKey: ["fetchPlayersData", nextCursor, itemsPerPage, debouncedQueryStr],
-    queryFn: () =>
-      fetchPlayersData(nextCursor, itemsPerPage, debouncedQueryStr),
+    queryKey: ["fetchPlayersData", nextCursor, itemsPerPage, deferredQueryStr],
+    queryFn: () => fetchPlayersData(nextCursor, itemsPerPage, deferredQueryStr),
   });
 
   const players: IPlayer[] | undefined = data?.data;
   const meta: IMeta | undefined = data?.meta;
   const isPreviousPageDisabled = meta?.prev_cursor == undefined;
 
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setQueryStr(event.target.value);
+    setNextCursor(initiateCurser);
+  };
+
   const prefetchPlayersData = async (
     queryClient: QueryClient,
     meta: IMeta,
     itemsPerPage: number,
-    debouncedQueryStr: string
+    deferredQueryStr: string
   ) => {
     await queryClient.prefetchQuery({
       staleTime: 1000 * 60,
@@ -38,10 +40,10 @@ export const PlayerManagement = () => {
         "fetchPlayersData",
         meta?.next_cursor,
         itemsPerPage,
-        debouncedQueryStr,
+        deferredQueryStr,
       ],
       queryFn: () =>
-        fetchPlayersData(meta?.next_cursor, itemsPerPage, debouncedQueryStr),
+        fetchPlayersData(meta?.next_cursor, itemsPerPage, deferredQueryStr),
     });
 
     const prefetchedData: PlayersInfoResponse | undefined =
@@ -49,7 +51,7 @@ export const PlayerManagement = () => {
         "fetchPlayersData",
         meta?.next_cursor,
         itemsPerPage,
-        debouncedQueryStr,
+        deferredQueryStr,
       ]);
     if (prefetchedData?.data && prefetchedData.data.length > 0) {
       setIsNextPageDisabled(false);
@@ -60,14 +62,14 @@ export const PlayerManagement = () => {
 
   useEffect(() => {
     if (meta?.next_cursor) {
-      prefetchPlayersData(queryClient, meta, itemsPerPage, debouncedQueryStr);
+      prefetchPlayersData(queryClient, meta, itemsPerPage, deferredQueryStr);
     } else {
       setIsNextPageDisabled(true);
     }
   }, [
     queryClient,
     meta?.next_cursor,
-    debouncedQueryStr,
+    deferredQueryStr,
     isNextPageDisabled,
     itemsPerPage,
   ]);
@@ -79,10 +81,8 @@ export const PlayerManagement = () => {
       setNextCursor={setNextCursor}
       nextCursor={nextCursor}
       queryStr={queryStr}
-      onSearch={(event: ChangeEvent<HTMLInputElement>) => {
-        setQueryStr(event.target.value);
-        setNextCursor(initiateCurser);
-      }}
+      setQueryStr={setQueryStr}
+      onSearch={handleSearch}
       isPreviousPageDisabled={isPreviousPageDisabled}
       itemsPerPage={itemsPerPage}
       setItemsPerPage={setItemsPerPage}
@@ -94,8 +94,8 @@ export const PlayerManagement = () => {
       meta={meta}
       notFound={
         <h1 className="my-3 text-warning font-bold text-xl">
-          {queryStr
-            ? `No Player Found match to the search '${queryStr}`
+          {deferredQueryStr
+            ? `No Player Found match to the search '${deferredQueryStr}`
             : "No Data Found"}
         </h1>
       }
