@@ -168,11 +168,6 @@ export const PlayersStates = ({
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setModalContent(undefined);
-  };
-
   return (
     <>
       <div className="my-2 mx-auto w-full">
