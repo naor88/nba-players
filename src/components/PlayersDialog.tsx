@@ -7,6 +7,7 @@ import { renderContent } from "./renderContent";
 import { IMeta, IPlayer, IStats } from "../types";
 import { PlayersStates, PlayersStatesRowData } from "./PlayersState";
 import { useFavorites } from "../hooks/useFavorites";
+import { initiateCurser } from "../utils";
 
 export const emptyState: IStats = {
   pts: 0,
@@ -177,7 +178,10 @@ export const PlayersDialog = ({
                 <li
                   className="cursor-pointer h-10 rounded-lg leading-10 flex flex-row justify-center hover:bg-primary"
                   key={`items_per_page_${item}`}
-                  onClick={() => setItemsPerPage(item)}
+                  onClick={() => {
+                    setItemsPerPage(item);
+                    setNextCursor(initiateCurser);
+                  }}
                 >
                   {item}
                 </li>

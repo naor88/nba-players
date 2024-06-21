@@ -1,6 +1,7 @@
 import { IPlayer } from "../types";
 import { getPlayerAvatar } from "../utils";
 import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "../services/queryKeys";
 
 export interface IPlayerImage {
   id: number;
@@ -15,7 +16,7 @@ export interface IPlayerImage {
 
 const usePlayerImages = (player: IPlayer): IPlayerImage => {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["getPlayerAvatar", player.id],
+    queryKey: QUERY_KEYS.AVATAR(player.id),
     queryFn: () => getPlayerAvatar(player),
   });
 

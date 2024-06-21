@@ -114,7 +114,6 @@ export const fetchPlayerImage = async (
   strRender: string;
   strThumb: string;
 } | null> => {
-  // const API_KEY = 'YOUR_API_KEY';
   const FREE_USER_API_KEY = "3";
   const url = `https://www.thesportsdb.com/api/v1/json/${FREE_USER_API_KEY}/searchplayers.php?p=${playerName}`;
 
@@ -123,18 +122,14 @@ export const fetchPlayerImage = async (
     const data = await response.json();
 
     if (data && data.player && data.player.length > 0) {
-      // return data.player[0].strThumb; // URL to player image
-      // return data.player[0].strCutout; // URL to player image
       return {
         strThumb: data.player[0].strThumb,
         strCutout: data.player[0].strCutout,
         strRender: data.player[0].strRender,
       };
-    } else {
-      throw new Error(`Player name: ${playerName} not found`);
     }
+    return null;
   } catch (error) {
-    console.error("Error fetching player image:", error);
     return null;
   }
 };

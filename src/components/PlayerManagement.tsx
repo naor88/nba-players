@@ -5,6 +5,7 @@ import { IMeta, IPlayer } from "../types";
 import { PlayersDialog } from "./PlayersDialog";
 import { initiateCurser, initiateItemsPerPage, debouncedDelay } from "../utils";
 import { useDebounce } from "../hooks/useDebounce";
+import { QUERY_KEYS } from "../services/queryKeys";
 
 export const PlayerManagement = () => {
   const queryClient = useQueryClient();
@@ -15,14 +16,13 @@ export const PlayerManagement = () => {
   const [isNextPageDisabled, setIsNextPageDisabled] = useState(true);
 
   const { isLoading, isError, error, data } = useQuery({
-    queryKey: ["fetchPlayersData", nextCursor, itemsPerPage, deferredQueryStr],
+    queryKey: QUERY_KEYS.PLAYERS(nextCursor, itemsPerPage, deferredQueryStr),
     queryFn: () => fetchPlayersData(nextCursor, itemsPerPage, deferredQueryStr),
   });
 
   const players: IPlayer[] = data?.data || [];
   const meta: IMeta | undefined = data?.meta;
   const isPreviousPageDisabled = meta?.prev_cursor == undefined;
-
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setQueryStr(event.target.value);
@@ -35,25 +35,21 @@ export const PlayerManagement = () => {
     itemsPerPage: number,
     deferredQueryStr: string
   ) => {
+    const playersNextPageKey = QUERY_KEYS.PLAYERS(
+      meta?.next_cursor,
+      itemsPerPage,
+      deferredQueryStr
+    );
     await queryClient.prefetchQuery({
-      staleTime: 1000 * 60,
-      queryKey: [
-        "fetchPlayersData",
-        meta?.next_cursor,
-        itemsPerPage,
-        deferredQueryStr,
-      ],
+      queryKey: playersNextPageKey,
       queryFn: () =>
         fetchPlayersData(meta?.next_cursor, itemsPerPage, deferredQueryStr),
+      staleTime: 5 * 1000 * 60,
+      gcTime: 10 * 1000 * 60,
     });
 
     const prefetchedData: PlayersInfoResponse | undefined =
-      queryClient.getQueryData([
-        "fetchPlayersData",
-        meta?.next_cursor,
-        itemsPerPage,
-        deferredQueryStr,
-      ]);
+      queryClient.getQueryData(playersNextPageKey);
     if (prefetchedData?.data && prefetchedData.data.length > 0) {
       setIsNextPageDisabled(false);
     } else {

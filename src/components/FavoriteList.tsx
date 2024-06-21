@@ -8,7 +8,7 @@ import {
 import { IMeta, IPlayer } from "../types";
 import { PlayersDialog } from "./PlayersDialog";
 import { useDebounce } from "../hooks/useDebounce";
-
+import { QUERY_KEYS } from "../services/queryKeys";
 import { debouncedDelay, initiateCurser, initiateItemsPerPage } from "../utils";
 import { useFavorites } from "../hooks/useFavorites";
 
@@ -26,26 +26,24 @@ export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
   const [isNextPageDisabled, setIsNextPageDisabled] = useState(true);
 
   const playersDataQuery = useQuery({
-    queryKey: [
-      "fetchPlayersData",
+    queryKey: QUERY_KEYS.FAVORITES(
       nextCursor,
       itemsPerPage,
       debouncedQueryStr,
-      ...favorites,
-    ],
+      favorites
+    ),
     queryFn: () =>
       fetchPlayersData(nextCursor, itemsPerPage, debouncedQueryStr, favorites),
     enabled: favorites && favorites.length > 0,
   });
 
   const playersStateQuery = useQuery({
-    queryKey: [
-      "fetchPlayersStats",
+    queryKey: QUERY_KEYS.STATS(
       nextCursor,
       itemsPerPage,
       debouncedQueryStr,
-      ...favorites,
-    ],
+      favorites
+    ),
     queryFn: () =>
       fetchPlayersStats(nextCursor, itemsPerPage, debouncedQueryStr, favorites),
     enabled: favorites && favorites.length > 0,
@@ -67,14 +65,16 @@ export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
     debouncedQueryStr: string,
     favorites: number[]
   ) => {
+    if (!favorites) return;
+    const nextFavoritesPageKey = QUERY_KEYS.FAVORITES(
+      meta?.next_cursor,
+      itemsPerPage,
+      debouncedQueryStr,
+      favorites
+    );
+
     await queryClient.prefetchQuery({
-      queryKey: [
-        "fetchPlayersData",
-        meta?.next_cursor,
-        itemsPerPage,
-        debouncedQueryStr,
-        ...favorites,
-      ],
+      queryKey: nextFavoritesPageKey,
       queryFn: () =>
         fetchPlayersData(
           meta?.next_cursor,
@@ -82,17 +82,10 @@ export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
           debouncedQueryStr,
           favorites
         ),
-      staleTime: 1000 * 60,
     });
 
     const prefetchedData: PlayersInfoResponse | undefined =
-      queryClient.getQueryData([
-        "fetchPlayersData",
-        meta?.next_cursor,
-        itemsPerPage,
-        debouncedQueryStr,
-        ...favorites,
-      ]);
+      queryClient.getQueryData(nextFavoritesPageKey);
     if (prefetchedData?.data && prefetchedData.data.length > 0) {
       setIsNextPageDisabled(false);
     } else {
@@ -101,7 +94,7 @@ export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
   };
 
   useEffect(() => {
-    if (meta?.next_cursor) {
+    if (meta?.next_cursor && favorites && favorites.length > 0) {
       prefetchPlayersData(
         queryClient,
         meta,
@@ -116,7 +109,6 @@ export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
     queryClient,
     meta?.next_cursor,
     debouncedQueryStr,
-    isNextPageDisabled,
     itemsPerPage,
     favorites,
   ]);

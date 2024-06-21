@@ -15,12 +15,10 @@ import { emptyState } from "./PlayersDialog";
 import { VscPassFilled, VscError } from "react-icons/vsc";
 import { Modal } from "./Modal";
 import { PlayerDetails } from "./PlayerDetails";
-import { IPlayerImage } from "../hooks/usePlayerImages";
 
 export type PlayersStatesRowData = {
   player: IPlayer;
   state: IStats;
-  playerImage?: IPlayerImage;
 };
 
 const columnHelper = createColumnHelper<PlayersStatesRowData>();
@@ -38,6 +36,10 @@ export const PlayersStates = ({
 }: PlayersStatesProps) => {
   const { removeFavorite } = useFavorites();
   const [data, setData] = useState(playersInfo);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<
+    PlayersStatesRowData | undefined
+  >();
 
   useEffect(() => {
     setData(playersInfo);
@@ -51,10 +53,6 @@ export const PlayersStates = ({
   };
 
   const columns = [
-    // columnHelper.accessor("player.id", {
-    //   cell: (info) => info.getValue(),
-    //   header: () => <span>Id</span>,
-    // }),
     {
       id: "playerImage",
       cell: (info: CellContext<PlayersStatesRowData, ReactNode>) => (
@@ -165,6 +163,16 @@ export const PlayersStates = ({
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const handleOpenModal = (original: PlayersStatesRowData) => {
+    setModalContent(original);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setModalContent(undefined);
+  };
+
   return (
     <>
       <div className="my-2 mx-auto w-full">
@@ -190,36 +198,37 @@ export const PlayersStates = ({
               const modalId = `Player_stats_${row.original.player.id}`;
 
               return (
-                <>
-                  <Modal
-                    modalId={modalId}
-                    modalBoxClassName="w-11/12 max-w-5xl"
-                  >
-                    <PlayerDetails
-                      player={row.original.player}
-                      stats={row.original.state}
-                    />
-                  </Modal>
-                  <tr
-                    key={`table_player_row_${row.original.player.id}`}
-                    className="hover:bg-primary hover:text-primary-content cursor-pointer"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <td className="border" key={cell.id}>
-                        <label htmlFor={modalId}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </label>
-                      </td>
-                    ))}
-                  </tr>
-                </>
+                <tr
+                  key={`table_player_row_${row.original.player.id}`}
+                  onClick={() => handleOpenModal(row.original)}
+                  className="hover:bg-primary hover:text-primary-content cursor-pointer"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td className="border" key={cell.id}>
+                      <label htmlFor={modalId}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </label>
+                    </td>
+                  ))}
+                </tr>
               );
             })}
           </tbody>
         </table>
+        {isModalOpen && modalContent && (
+          <Modal
+            modalId={`Player_stats_${modalContent.player.id}`}
+            modalBoxClassName="w-11/12 max-w-5xl"
+          >
+            <PlayerDetails
+              player={modalContent.player}
+              stats={modalContent.state}
+            />
+          </Modal>
+        )}
       </div>
     </>
   );

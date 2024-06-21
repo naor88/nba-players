@@ -1,14 +1,11 @@
-import {
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { Suspense, useEffect, useState } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { queryClient } from "./services/queryClient";
 import { PlayerManagement } from "./components/PlayerManagement";
 import { FavoriteListTest } from "./components/FavoriteList";
 import { Layout } from "./components/Layout";
 import { FavoritesProvider } from "./context/FavoritesContext";
-import { Suspense, useEffect, useState } from "react";
 import useOnlineStatus from "./hooks/useOnlineStatus";
 import NoInternetPage from "./components/NoInternetPage";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -21,14 +18,6 @@ function App() {
   const isOnline = useOnlineStatus();
   const { apiKey, isValidating, setApiKey } = useApiKey();
   const [error, setError] = useState<Error | undefined>();
-
-  const queryClient = new QueryClient({
-    queryCache: new QueryCache({
-      onError: (error) => {
-        setError(error);
-      },
-    }),
-  });
 
   useEffect(() => {
     if (!error) return;
