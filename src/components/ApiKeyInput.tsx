@@ -42,6 +42,7 @@ const ApiKeyInput: React.FC = () => {
               You can obtain an API key by creating a free account at{" "}
               <a
                 href="https://app.balldontlie.io"
+                target="_blank"
                 className="text-blue-500 underline"
               >
                 https://app.balldontlie.io
