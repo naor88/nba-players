@@ -122,7 +122,12 @@ export const PlayersDialog = ({
                 value={queryStr}
                 onChange={onSearch}
               />
-              {queryStr && <IoMdCloseCircleOutline className="cursor-pointer" onClick={()=>setQueryStr('')}/>}
+              {queryStr && (
+                <IoMdCloseCircleOutline
+                  className="cursor-pointer"
+                  onClick={() => setQueryStr("")}
+                />
+              )}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
@@ -139,11 +144,11 @@ export const PlayersDialog = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-3">
-          <div className="join col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="xl:join col-span-1 md:col-span-2 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
             <button
               disabled={isError || isLoading || isPreviousPageDisabled}
-              className="join-item btn btn-outline h-full"
+              className="xl:join-item btn btn-outline w-full md:w-auto"
               onClick={handlePreviousPage}
             >
               <FaArrowAltCircleLeft />
@@ -151,14 +156,14 @@ export const PlayersDialog = ({
             </button>
             <button
               disabled={isError || isLoading || isNextPageDisabled}
-              className="join-item btn btn-outline h-full"
+              className="xl:join-item btn btn-outline w-full md:w-auto"
               onClick={handleNextPage}
             >
               Next Page
               <FaArrowAltCircleRight />
             </button>
           </div>
-          <div className="dropdown dropdown-end col-span-1 ml-4 border rounded-box">
+          <div className="dropdown dropdown-end col-span-1">
             <div
               tabIndex={0}
               role="button"
@@ -190,7 +195,7 @@ export const PlayersDialog = ({
           children:
             players && players?.length > 0 ? (
               playersState ? (
-                <PlayersStates playersInfo={playersInfo} queryStr={queryStr}/>
+                <PlayersStates playersInfo={playersInfo} queryStr={queryStr} />
               ) : (
                 <PlayerList players={players} queryStr={queryStr} />
               )

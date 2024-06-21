@@ -62,11 +62,11 @@ function App() {
                 </div>
               )}
               <Layout>
-                <div className="grid md:grid-cols-3 gap-4 h-screen grid-cols-1 grid-rows-5">
-                  <div className="md:col-span-1 h-full row-span-2">
+                <div className="grid grid-cols-1 gap-4 h-screen xl:grid-cols-3 md:grid-rows-9 grid-rows-2">
+                  <div className="h-full xl:col-span-1 md:row-span-4 row-span-1 overflow-hidden xl:overflow-visible">
                     <PlayerManagement />
                   </div>
-                  <div className="md:col-span-2 h-full row-span-3">
+                  <div className="h-full xl:col-span-2 md:row-span-5 row-span-1">
                     <FavoriteListTest />
                   </div>
                 </div>
