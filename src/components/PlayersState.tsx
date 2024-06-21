@@ -13,6 +13,8 @@ import Avatar from "./Avatar";
 import HighlightText from "./HighlightText";
 import { emptyState } from "./PlayersDialog";
 import { VscPassFilled, VscError } from "react-icons/vsc";
+import { Modal } from "./Modal";
+import { PlayerDetails } from "./PlayerDetails";
 
 export type PlayersStatesRowData = {
   player: IPlayer;
@@ -54,8 +56,8 @@ export const PlayersStates = ({
     {
       id: "playerImage",
       cell: (info: CellContext<PlayersStatesRowData, ReactNode>) => (
-        <div className="flex justify-center max-h-36 max-w-32">
-          <Avatar player={info.row.original.player} />
+        <div className="flex justify-center max-h-36 max-w-32 bg-white">
+          <Avatar player={info.row.original.player} cutoutImg />
         </div>
       ),
       header: () => <span>Image</span>,
@@ -161,40 +163,63 @@ export const PlayersStates = ({
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
   return (
-    <div className="my-2 mx-auto">
-      <table className="text-center">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th className="border" key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr
-              key={`table_player_row_${row.original.player.id}`}
-              className="hover:bg-primary hover:text-primary-content cursor-pointer"
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td className="border" key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <div className="my-2 mx-auto">
+        <table className="text-center">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th className="border" key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => {
+              const modalId = `Player_stats_${row.original.player.id}`;
+
+              return (
+                <>
+                  <Modal
+                    modalId={modalId}
+                    modalBoxClassName="w-11/12 max-w-5xl"
+                  >
+                    <PlayerDetails
+                      player={row.original.player}
+                      stats={row.original.state}
+                    />
+                  </Modal>
+                  <tr
+                    key={`table_player_row_${row.original.player.id}`}
+                    className="hover:bg-primary hover:text-primary-content cursor-pointer"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td className="border" key={cell.id}>
+                        <label htmlFor={modalId}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </label>
+                      </td>
+                    ))}
+                  </tr>
+                </>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };

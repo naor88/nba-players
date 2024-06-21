@@ -5,7 +5,13 @@ export const initiateCurser = 0;
 export const initiateItemsPerPage = 25;
 export const debouncedDelay = 500;
 
-export const getPlayerAvatar = async (player: IPlayer) => {
+export const getPlayerAvatar = async (
+  player: IPlayer
+): Promise<{
+  strCutout: string;
+  strRender: string;
+  strThumb: string;
+} | null> => {
   const playerImageKey = `player_image_${player.id}`;
   const imageURLs = localStorage.getItem(playerImageKey);
   if (imageURLs) return JSON.parse(imageURLs);
@@ -65,7 +71,7 @@ export function sortByIdList<T extends IndexedObject>(
   key: string
 ): T[] {
   const getNestedValue = (obj: T, path: string): any => {
-    return path.split('.').reduce((o, k) => (o ? o[k] : undefined), obj);
+    return path.split(".").reduce((o, k) => (o ? o[k] : undefined), obj);
   };
 
   return items.sort((a, b) => {
@@ -74,3 +80,28 @@ export function sortByIdList<T extends IndexedObject>(
     return idList.indexOf(aValue) - idList.indexOf(bValue);
   });
 }
+
+export const statsMeaningMapping = {
+  pts: "Points",
+  ast: "Assists",
+  turnover: "Turnovers",
+  pf: "Personal Fouls",
+  fga: "Field Goals Attempted",
+  fgm: "Field Goals Made",
+  fta: "Free Throws Attempted",
+  ftm: "Free Throws Made",
+  fg3a: "Three-Point Field Goals Attempted",
+  fg3m: "Three-Point Field Goals Made",
+  reb: "Rebounds",
+  oreb: "Offensive Rebounds",
+  dreb: "Defensive Rebounds",
+  stl: "Steals",
+  blk: "Blocks",
+  fg_pct: "Field Goal Percentage",
+  fg3_pct: "Three-Point Field Goal Percentage",
+  ft_pct: "Free Throw Percentage",
+  min: "Minutes",
+  games_played: "Games Played",
+  player_id: "Player ID",
+  season: "Season",
+};

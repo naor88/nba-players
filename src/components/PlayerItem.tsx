@@ -1,6 +1,4 @@
-import { MdFavoriteBorder } from "react-icons/md";
-import { MdFavorite } from "react-icons/md";
-
+import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { IPlayer, IStats } from "../types";
 import Avatar from "./Avatar";
 import HighlightText from "./HighlightText";
@@ -20,7 +18,7 @@ export const PlayerItem = ({ player, queryStr }: PlayerItemProps) => {
 
   return (
     <>
-      <Modal modalId={modalId}>
+      <Modal modalId={modalId} modalBoxClassName="w-11/12 max-w-5xl">
         <PlayerDetails player={player} />
       </Modal>
       <div className="grid grid-cols-5 max-h-20">
@@ -40,8 +38,8 @@ export const PlayerItem = ({ player, queryStr }: PlayerItemProps) => {
           <label htmlFor={modalId}>
             <div className="cursor-pointer flex items-center">
               <div className="avatar">
-                <div className="mask mask-circle w-12 h-12 bg-black">
-                  <Avatar player={player} />
+                <div className="mask mask-circle w-12 h-12 bg-white">
+                  <Avatar player={player} cutoutImg/>
                 </div>
                 <div className="mx-2">
                   <div className="font-bold">

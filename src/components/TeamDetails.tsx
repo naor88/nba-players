@@ -2,14 +2,15 @@ import { ITeam } from "../types";
 import { toPascalCaseWithSpaces } from "../utils";
 
 interface TeamDetailsProps {
+  className?: string;
   team: ITeam;
 }
 
-export const TeamDetails = ({ team }: TeamDetailsProps) => {
+export const TeamDetails = ({ team, className }: TeamDetailsProps) => {
   return (
-    <>
-      Team Details
-      <div className="card card-side bg-base-100 shadow-xl">
+    <>      
+      <div className="font-bold text-2xl m-4">Team Details</div>
+      <div className={`card card-side bg-base-100 shadow-xl ${className}`}>
         <div className="card-body w-96">
           {(Object.keys(team) as Array<keyof ITeam>).map((key) => {
             return (
