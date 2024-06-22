@@ -8,24 +8,29 @@ interface DraggableMinimizableWidgetProps {
   initialPosition: { x: number; y: number };
 }
 
-export const DraggableMinimizableWidget: React.FC<DraggableMinimizableWidgetProps> = ({
-  children,
-  initialPosition,
-}) => {
+export const DraggableMinimizableWidget: React.FC<
+  DraggableMinimizableWidgetProps
+> = ({ children, initialPosition }) => {
   const [position, setPosition] = useState(initialPosition);
   const [dragging, setDragging] = useState(false);
   const [rel, setRel] = useState({ x: 0, y: 0 });
   const [minimized, setMinimized] = useState(false);
   const [lastPosition, setLastPosition] = useState(initialPosition);
-  const [minimizedIconPosition, setMinimizedIconPosition] = useState({ x: 0, y: 0 });
+  const [minimizedIconPosition, setMinimizedIconPosition] = useState({
+    x: 0,
+    y: 0,
+  });
 
   const widgetRef = useRef<HTMLDivElement>(null);
   const cacheManagerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (cacheManagerRef.current) {
+    if (cacheManagerRef.current && widgetRef.current) {
       const rect = cacheManagerRef.current.getBoundingClientRect();
-      setMinimizedIconPosition({ x: rect.left, y: rect.top });
+      const widgetRect = widgetRef.current.getBoundingClientRect();
+      const newX = rect.left + (rect.width / 2) - (widgetRect.width / 2);
+      const newY = rect.top + (rect.height / 2) - (widgetRect.height / 2);
+      setMinimizedIconPosition({ x: newX, y: newY });
     }
   }, []);
 
@@ -48,8 +53,14 @@ export const DraggableMinimizableWidget: React.FC<DraggableMinimizableWidgetProp
     const newX = e.clientX - rel.x;
     const newY = e.clientY - rel.y;
 
-    const constrainedX = Math.max(0, Math.min(newX, window.innerWidth - widgetRect.width));
-    const constrainedY = Math.max(0, Math.min(newY, window.innerHeight - widgetRect.height));
+    const constrainedX = Math.max(
+      0,
+      Math.min(newX, window.innerWidth - widgetRect.width)
+    );
+    const constrainedY = Math.max(
+      0,
+      Math.min(newY, window.innerHeight - widgetRect.height)
+    );
 
     setPosition({ x: constrainedX, y: constrainedY });
 
@@ -88,8 +99,13 @@ export const DraggableMinimizableWidget: React.FC<DraggableMinimizableWidgetProp
   const widgetStyle: CSSProperties = {
     top: `${position.y}px`,
     left: `${position.x}px`,
-    transform: minimized ? `translate(${minimizedIconPosition.x - position.x}px, ${minimizedIconPosition.y - position.y}px) scale(0.1)` : "scale(1)",
-    opacity: minimized ? 0.2 : 1,
+    transform: minimized
+      ? `translate(${(minimizedIconPosition.x - position.x)}px, ${
+          (minimizedIconPosition.y - position.y)
+        }px) scale(0.1)`
+      : `scale(1)`,
+    opacity: minimized ? 0 : 1,
+    display: minimized ? 'none' : '',
     transition: "transform 1s ease-in-out, opacity 1s ease-in-out",
     position: "fixed",
     backgroundColor: "white",
@@ -112,13 +128,11 @@ export const DraggableMinimizableWidget: React.FC<DraggableMinimizableWidgetProp
       >
         <SiAmazonelasticache size={30} />
       </div>
-      <div
-        ref={widgetRef}
-        style={widgetStyle}
-        onMouseDown={handleMouseDown}
-        className="draggable-widget"
-      >
-        <button className="absolute top-1 right-2 text-sm" onClick={toggleMinimize}>
+      <div ref={widgetRef} style={widgetStyle} onMouseDown={handleMouseDown}>
+        <button
+          className="absolute top-1 right-2 text-sm"
+          onClick={toggleMinimize}
+        >
           <HiMiniMinusCircle color="black" />
         </button>
         {children}
