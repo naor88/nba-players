@@ -16,7 +16,7 @@ export const CacheSizes: React.FC = () => {
 
   return (
     <DraggableMinimizableWidget initialPosition={{ x: 10, y: 10 }}>
-      <div className="p-4 user-select-none">
+      <div className="user-select-none">
         <p className="font-semibold">Image Cache</p>
         <p>Entries: {imageCacheInfo.numberOfEntries}</p>
         <p>

@@ -110,7 +110,7 @@ export const DraggableMinimizableWidget: React.FC<
     backgroundColor: "white",
     // opacity: 0.9,
     padding: "16px",
-    border: "1px solid gray",
+    // border: "1px solid gray",
     borderRadius: "8px",
     boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
     cursor: "move",
@@ -127,7 +127,7 @@ export const DraggableMinimizableWidget: React.FC<
       >
         <SiAmazonelasticache size={30} />
       </div>
-      <div ref={widgetRef} style={widgetStyle} onMouseDown={handleMouseDown}>
+      <div ref={widgetRef} style={widgetStyle} onMouseDown={handleMouseDown} className="border-blue-700 border-4 w-62 h-62 min-w-62 min-h-62">
         <button
           className="absolute top-1 right-2 text-sm"
           onClick={toggleMinimize}
