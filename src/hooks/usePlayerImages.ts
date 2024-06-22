@@ -1,6 +1,6 @@
-import { IPlayer } from "../types";
-import { getPlayerAvatar } from "../utils";
 import { useQuery } from "@tanstack/react-query";
+import { IPlayer } from "../types";
+import { getPlayerAvatar } from "../services/playerAvatar";
 import { QUERY_KEYS } from "../services/queryKeys";
 
 export interface IPlayerImage {

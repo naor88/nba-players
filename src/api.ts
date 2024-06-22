@@ -1,6 +1,6 @@
-import { FetchError, IMeta, IPlayer, IStats, PlayersInfoResponse, StatsResponse } from "./types";
+import { FetchError, PlayersInfoResponse, StatsResponse } from "./types";
 import * as ls from "./secureLS";
-const API_BASE_URL = "https://api.balldontlie.io/v1";
+import {APIs} from './constants';
 
 const getApiKey = (): string | null => {
   return ls.get("apiKey");
@@ -25,7 +25,7 @@ const buildPlayerQuery = (favorites: number[]) =>
 
 export const validateApiKeyAPI = async (apiKey: string): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/players`, {
+    const response = await fetch(`${APIs.BallDontLie}/players`, {
       headers: { Authorization: apiKey },
     });
     if (response.status === 200) {
@@ -54,7 +54,7 @@ export const fetchPlayersData = async (
     queryString += `&${favoritesQuery}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}/players?${queryString}`, {
+  const response = await fetch(`${APIs.BallDontLie}/players?${queryString}`, {
     headers: getHeaders(),
   });
 
@@ -85,7 +85,7 @@ export const fetchPlayersStats = async (
 
   const previousSeasonYear = new Date().getFullYear() - 1;
   const response = await fetch(
-    `${API_BASE_URL}/season_averages?season=${previousSeasonYear}&?${queryString}`,
+    `${APIs.BallDontLie}/season_averages?season=${previousSeasonYear}&?${queryString}`,
     {
       headers: getHeaders(),
     }
@@ -106,8 +106,7 @@ export const fetchPlayerImage = async (
   strRender: string;
   strThumb: string;
 } | null> => {
-  const FREE_USER_API_KEY = "3";
-  const url = `https://www.thesportsdb.com/api/v1/json/${FREE_USER_API_KEY}/searchplayers.php?p=${playerName}`;
+  const url = `${APIs.TheSportsDB}/searchplayers.php?p=${playerName}`;
 
   try {
     const response = await fetch(url);

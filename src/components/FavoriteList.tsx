@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PlayersDialog } from "./PlayersDialog";
 import { useDebounce } from "../hooks/useDebounce";
-import { debouncedDelay, initiateCurser, initiateItemsPerPage } from "../utils";
+import { debouncedDelay, initiateCurser, initiateItemsPerPage } from "../constants";
 import { useFavorites } from "../hooks/useFavorites";
 import { useFavoritesPlayersQueries } from "../hooks/useFavoritesPlayersQueries";
 import { prefetchPlayersNextPage } from "../services/playerDataQueries";

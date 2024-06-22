@@ -3,7 +3,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPlayersData } from "../api";
 import { IMeta, IPlayer } from "../types";
 import { PlayersDialog } from "./PlayersDialog";
-import { initiateCurser, initiateItemsPerPage, debouncedDelay } from "../utils";
+import {
+  initiateCurser,
+  initiateItemsPerPage,
+  debouncedDelay,
+} from "../constants";
 import { useDebounce } from "../hooks/useDebounce";
 import { QUERY_KEYS } from "../services/queryKeys";
 import { prefetchPlayersNextPage } from "../services/playerDataQueries";

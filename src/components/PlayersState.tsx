@@ -11,7 +11,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { useFavorites } from "../hooks/useFavorites";
 import Avatar from "./Avatar";
 import HighlightText from "./HighlightText";
-import { emptyState } from "./PlayersDialog";
+import { emptyState } from "../constants";
 import { VscPassFilled, VscError } from "react-icons/vsc";
 import { Modal } from "./Modal";
 import { PlayerDetails } from "./PlayerDetails";

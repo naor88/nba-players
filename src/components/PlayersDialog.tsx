@@ -1,38 +1,18 @@
-import { ChangeEvent, ReactNode, useState } from "react";
-import { FaArrowAltCircleRight } from "react-icons/fa";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
+import {
+  ChangeEvent,
+  ReactNode,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
+import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { PlayerList } from "./PlayerList";
 import { renderContent } from "./renderContent";
 import { IMeta, IPlayer, IStats } from "../types";
 import { PlayersStates, PlayersStatesRowData } from "./PlayersState";
 import { useFavorites } from "../hooks/useFavorites";
-import { initiateCurser } from "../utils";
-
-export const emptyState: IStats = {
-  pts: 0,
-  ast: 0,
-  turnover: 0,
-  pf: 0,
-  fga: 0,
-  fgm: 0,
-  fta: 0,
-  ftm: 0,
-  fg3a: 0,
-  fg3m: 0,
-  reb: 0,
-  oreb: 0,
-  dreb: 0,
-  stl: 0,
-  blk: 0,
-  fg_pct: 0,
-  fg3_pct: 0,
-  ft_pct: 0,
-  min: "",
-  games_played: 0,
-  player_id: 0,
-  season: 0,
-};
+import { initiateCurser, emptyState } from "../constants";
 
 interface PlayersDialogProps {
   title: string;
@@ -80,32 +60,34 @@ export const PlayersDialog = ({
   const [stack, setStack] = useState<number[]>([]);
   const { favorites } = useFavorites();
 
-  const handlePreviousPage = () => {
+  const handlePreviousPage = useCallback(() => {
     const prevStack = [...stack];
     const lastNextCursor = prevStack.pop();
-    setStack([...prevStack]);
-    if (typeof lastNextCursor == "number") setNextCursor(lastNextCursor);
-  };
+    setStack(prevStack);
+    if (typeof lastNextCursor === "number") setNextCursor(lastNextCursor);
+  }, [stack, setNextCursor]);
 
-  const handleNextPage = () => {
+  const handleNextPage = useCallback(() => {
     setStack((prevStack) => [...prevStack, nextCursor]);
     if (meta) setNextCursor(meta.next_cursor);
-  };
+  }, [nextCursor, setNextCursor, meta]);
 
   const playersInfo: PlayersStatesRowData[] = players
     .filter((player) => favorites.includes(player.id))
-    ?.map((player) => {
+    .map((player) => {
       const state: IStats =
-        playersState?.find((s) => s.player_id == player.id) || emptyState;
+        playersState?.find((s) => s.player_id === player.id) || emptyState;
       return {
         player,
         state,
       };
     });
 
-  if (players.length == 0 && isPreviousPageDisabled == false) {
-    handlePreviousPage();
-  }
+  useEffect(() => {
+    if (players.length === 0 && !isPreviousPageDisabled) {
+      handlePreviousPage();
+    }
+  }, [players.length, isPreviousPageDisabled, handlePreviousPage]);
 
   return (
     <div className="h-full md:h-auto overflow-y-scroll no-scrollbar overflow-auto">
@@ -195,7 +177,7 @@ export const PlayersDialog = ({
           isError,
           error,
           children:
-            players && players?.length > 0 ? (
+            players.length > 0 ? (
               playersState ? (
                 <PlayersStates playersInfo={playersInfo} queryStr={queryStr} />
               ) : (

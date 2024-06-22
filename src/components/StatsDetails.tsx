@@ -1,6 +1,5 @@
 import { IStats } from "../types";
-import { statsMeaningMapping } from "../utils";
-import { emptyState } from "./PlayersDialog";
+import { statsMeaningMapping, emptyState } from "../constants";
 
 interface StatsDetailsProps {
   className?: string;

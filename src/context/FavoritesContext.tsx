@@ -30,23 +30,35 @@ export const useFavorites = () => {
 interface FavoritesProviderProps {
   children: ReactNode;
 }
+
 const FAVORITES_KEY = "favoritePlayers";
 
 export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
   children,
 }) => {
   const [favorites, setFavorites] = useState<number[]>(() => {
-    const storedFavorites = localStorage.getItem(FAVORITES_KEY);
-    return storedFavorites ? JSON.parse(storedFavorites) : [];
+    try {
+      const storedFavorites = localStorage.getItem(FAVORITES_KEY);
+      return storedFavorites ? JSON.parse(storedFavorites) : [];
+    } catch (error) {
+      console.error("Failed to load favorites from localStorage", error);
+      return [];
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+    try {
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+    } catch (error) {
+      console.error("Failed to save favorites to localStorage", error);
+    }
   }, [favorites]);
 
   const addFavorite = useCallback((id: number) => {
     setFavorites((prevFavorites) => {
-      const updatedFavorites = [id, ...prevFavorites]; //.sort((a, b) => a - b);
+      const updatedFavorites = Array.from(new Set([id, ...prevFavorites])).sort(
+        (a, b) => a - b
+      );
       return updatedFavorites;
     });
   }, []);
@@ -56,7 +68,6 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
       const updatedFavorites = prevFavorites.filter(
         (favoriteId) => favoriteId !== id
       );
-      //.sort((a, b) => a - b);
       return updatedFavorites;
     });
   }, []);
