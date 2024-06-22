@@ -11,10 +11,11 @@ interface PlayerAvatarProps {
 export const PlayerAvatar = ({
   player,
   className,
+  preferredImageType
 }: PlayerAvatarProps ) => {
   const { url, loading, error } = usePlayerImages(player);
   let altText = `${player.first_name} ${player.last_name}`;
   if (loading) altText = `loading ` + altText;
   if (error) altText = `error ` + altText;
-  return <Avatar className={className} imageUrl={url} alt={altText} />;
+  return <Avatar className={className} imageUrl={url} alt={altText} preferredImageType={preferredImageType}/>;
 };
