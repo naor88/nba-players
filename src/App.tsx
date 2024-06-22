@@ -13,6 +13,7 @@ import { useApiKey } from "./hooks/useApiKey";
 import ApiKeyInput from "./components/ApiKeyInput";
 import { FetchError } from "./types";
 import { Spinner } from "./components/Spinner";
+import { CacheSizes } from "./components/CacheSizes";
 
 function App() {
   const isOnline = useOnlineStatus();
@@ -54,6 +55,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
         {/* <ErrorComponent /> */}
+        <CacheSizes />
         <FavoritesProvider>
           <>
             {error && (
