@@ -8,11 +8,7 @@ export const getPlayerAvatar = async (
   strCutout: string;
   strRender: string;
   strThumb: string;
-} | null> => {
-  const playerImageKey = `player_image_${player.id}`;
-  const imageURLs = localStorage.getItem(playerImageKey);
-  if (imageURLs) return JSON.parse(imageURLs);
-
+}> => {
   let imageURL = await fetchPlayerImage(
     `${player.first_name}_${player.last_name}`
   );
@@ -30,8 +26,6 @@ export const getPlayerAvatar = async (
       strThumb: fallBackURL,
     };
   }
-
-  localStorage.setItem(playerImageKey, JSON.stringify(imageURL));
 
   return imageURL;
 };

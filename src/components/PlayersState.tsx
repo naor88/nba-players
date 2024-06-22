@@ -9,7 +9,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { IPlayer, IStats } from "../types";
 import { MdDeleteForever } from "react-icons/md";
 import { useFavorites } from "../hooks/useFavorites";
-import Avatar from "./Avatar";
+import { PlayerAvatar } from "./PlayerAvatar";
 import HighlightText from "./HighlightText";
 import { emptyState } from "../constants";
 import { VscPassFilled, VscError } from "react-icons/vsc";
@@ -57,7 +57,7 @@ export const PlayersStates = ({
       id: "playerImage",
       cell: (info: CellContext<PlayersStatesRowData, ReactNode>) => (
         <div className="flex justify-center max-h-36 max-w-32 bg-white">
-          <Avatar player={info.row.original.player} cutoutImg />
+          <PlayerAvatar player={info.row.original.player} preferredImageType="cutout"/>
         </div>
       ),
       header: () => <span>Image</span>,

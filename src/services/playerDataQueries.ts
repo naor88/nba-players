@@ -1,7 +1,9 @@
 import { QueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../services/queryKeys";
 import { fetchPlayersData } from "../api";
-import { PlayersInfoResponse, IMeta } from "../types";
+import { PlayersInfoResponse, IMeta, IPlayer } from "../types";
+import { getPlayerAvatar } from "./playerAvatar";
+import { imageCache } from "./ImageCache";
 
 const STALE_TIME = 5 * 1000 * 60; // 5 minutes
 const GC_TIME = 10 * 1000 * 60; // 10 minutes
@@ -25,11 +27,29 @@ export const prefetchPlayersNextPage = async (
     : QUERY_KEYS.PLAYERS(next_cursor, itemsPerPage, queryStr);
 
   await queryClient.prefetchQuery({
-    queryKey,
-    queryFn: () =>
-      fetchPlayersData(next_cursor, itemsPerPage, queryStr, favorites),
     staleTime: STALE_TIME,
     gcTime: GC_TIME,
+    queryKey,
+    queryFn: async () => {
+      const data = await fetchPlayersData(meta.next_cursor, itemsPerPage, queryStr, favorites);
+      if(!data) return;
+      await Promise.all(data.data.map(async (player: IPlayer) => {
+        const avatarKey = QUERY_KEYS.AVATAR(player.id);
+        await queryClient.prefetchQuery({
+          queryKey: avatarKey,
+          queryFn: async () => {
+            const avatarData = await getPlayerAvatar(player);
+            await Promise.allSettled([
+              avatarData.strCutout ? imageCache.loadImage(avatarData.strCutout) : null,
+              avatarData.strRender ? imageCache.loadImage(avatarData.strRender) : null,
+              avatarData.strThumb ? imageCache.loadImage(avatarData.strThumb) : null,
+            ]);
+            return avatarData;
+          },
+        });
+      }));
+      return data;
+    },
   });
 
   const prefetchedData: PlayersInfoResponse | undefined =

@@ -1,6 +1,6 @@
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { IPlayer, IStats } from "../types";
-import Avatar from "./Avatar";
+import { PlayerAvatar } from "./PlayerAvatar";
 import HighlightText from "./HighlightText";
 import { Modal } from "./Modal";
 import { PlayerDetails } from "./PlayerDetails";
@@ -38,7 +38,7 @@ export const PlayerItem = ({ player, queryStr }: PlayerItemProps) => {
             <div className="cursor-pointer flex items-center">
               <div className="avatar">
                 <div className="mask mask-circle w-12 h-12 bg-white">
-                  <Avatar player={player} cutoutImg />
+                  <PlayerAvatar player={player} preferredImageType="cutout" />
                 </div>
                 <div className="mx-2">
                   <div className="font-bold">

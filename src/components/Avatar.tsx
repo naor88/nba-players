@@ -1,39 +1,51 @@
-import React from "react";
-import profileImg from "../assets/profile-user-icon.jpg";
-import { IPlayer } from "../types";
-import usePlayerImages from "../hooks/usePlayerImages";
+import React, { useEffect, useState } from "react";
+import { imageCache } from "../services/ImageCache";
 
 interface AvatarProps {
   className?: string;
-  player: IPlayer;
-  cutoutImg?: boolean;
-  renderImg?: boolean;
-  thumbImg?: boolean;
+  imageUrl: {
+    strCutout: string | null;
+    strRender: string | null;
+    strThumb: string | null;
+  };
+  alt: string;
+  preferredImageType?: 'cutout' | 'render' | 'thumb';
 }
 
-const Avatar: React.FC<AvatarProps> = ({
+export const Avatar: React.FC<AvatarProps> = ({
+  imageUrl,
+  alt,
   className,
-  player,
-  cutoutImg,
-  renderImg,
-  thumbImg,
+  preferredImageType = 'cutout',
 }) => {
-  const playerImage = usePlayerImages(player);
+  const [src, setSrc] = useState<string | null>(null);
 
-  let finalUrl = profileImg;
-  if (playerImage && !playerImage.error && playerImage.url) {
-    if (cutoutImg && playerImage.url.strCutout) {
-      finalUrl = playerImage.url.strCutout;
-    } else if (renderImg && playerImage.url.strRender) {
-      finalUrl = playerImage.url.strRender;
-    } else if (thumbImg && playerImage.url.strThumb) {
-      finalUrl = playerImage.url.strThumb;
-    }
+  useEffect(() => {
+    const loadImage = async () => {
+      const urls = [
+        preferredImageType === 'cutout' && imageUrl.strCutout,
+        preferredImageType === 'render' && imageUrl.strRender,
+        preferredImageType === 'thumb' && imageUrl.strThumb,
+        imageUrl.strCutout,
+        imageUrl.strRender,
+        imageUrl.strThumb,
+      ].filter(Boolean);
+
+      for (const url of urls) {
+        const imgSrc = await imageCache.loadImage(url as string).catch(() => null);
+        if (imgSrc) {
+          setSrc(imgSrc);
+          break;
+        }
+      }
+    };
+
+    loadImage().catch((err) => console.error("Error loading image:", err));
+  }, [imageUrl, preferredImageType]);
+
+  if (!src) {
+    return <p>No image available</p>;
   }
 
-  return (
-    <img className={className} src={finalUrl} alt="Avatar Profile Image" />
-  );
+  return <img className={className} src={src} alt={alt} />;
 };
-
-export default Avatar;

@@ -2,7 +2,7 @@ import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useFavorites } from "../context/FavoritesContext";
 import { IPlayer, IStats } from "../types";
 import { toPascalCaseWithSpaces } from "../utils";
-import Avatar from "./Avatar";
+import { PlayerAvatar } from "./PlayerAvatar";
 import { TeamDetails } from "./TeamDetails";
 import { StatsDetails } from "./StatsDetails";
 
@@ -32,9 +32,9 @@ export const PlayerDetails = ({ player, stats }: PlayerDetailsProps) => {
       </div>
       <div className="card card-side bg-base-100 shadow-xl flex border">
         <figure className="flex flex-col items-center bg-white p-4 space-y-4">
-          <Avatar className="w-52 h-52" player={player} cutoutImg />
-          <Avatar className="w-52 h-52" player={player} renderImg />
-          <Avatar className="w-52 h-52" player={player} thumbImg />
+          <PlayerAvatar className="w-52 h-52" player={player} preferredImageType="cutout" />
+          <PlayerAvatar className="w-52 h-52" player={player} preferredImageType="render" />
+          <PlayerAvatar className="w-52 h-52" player={player} preferredImageType="thumb" />
         </figure>
         <div className="card-body p-4">
           {(Object.keys(player) as Array<keyof IPlayer>).map((key) => {
