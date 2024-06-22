@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, CSSProperties } from "react";
 import { HiMiniMinusCircle } from "react-icons/hi2";
 import { SiAmazonelasticache } from "react-icons/si";
-import "./Minimize.css"; // Import the custom CSS file
 
 interface DraggableMinimizableWidgetProps {
   children: React.ReactNode;
@@ -100,8 +99,8 @@ export const DraggableMinimizableWidget: React.FC<
     top: `${position.y}px`,
     left: `${position.x}px`,
     transform: minimized
-      ? `translate(${(minimizedIconPosition.x - position.x)}px, ${
-          (minimizedIconPosition.y - position.y)
+      ? `translate(${(minimizedIconPosition.x - lastPosition.x)}px, ${
+          (minimizedIconPosition.y - lastPosition.y)
         }px) scale(0.1)`
       : `scale(1)`,
     opacity: minimized ? 0 : 1,
