@@ -15,6 +15,8 @@ The NBA Players Tracker is a web application designed to showcase the ability to
 - **Error Handling**: Robust error handling and loading states for API requests.
 - **Responsive Design**: Works well on various screen sizes.
 - **Custom Hooks and Utility Functions**: Well-structured codebase with reusable components.
+- **Cache Management**: Efficient caching of API data and images for improved performance.
+- **Cache Size Widget**: A draggable and minimizable widget to monitor the cache sizes.
 
 ## Technologies Used
 
@@ -73,11 +75,39 @@ The application is deployed on Netlify, providing a fast and reliable hosting so
 
 [<img src="docs/PlayVideo.png">](https://share.vidyard.com/watch/6knLBSQBV2SRUvfyxzEJVQ?)
 
-### API Documentation
+## API Documentation
 
 - [TheSportsDB](https://www.thesportsdb.com/free_sports_api)
 - [BallDontLie](https://docs.balldontlie.io/#introduction)
 - [RoboHash](https://robohash.org/)
+
+## Working with Cache
+
+### React Query Cache
+
+The application uses **TanStack React Query** for efficient data fetching and caching. React Query automatically caches API responses to improve performance and reduce unnecessary network requests.
+
+- **Fetching Data**: Data fetching is handled using the `useQuery` hook.
+- **Cache Invalidation**: React Query automatically invalidates and refetches data as needed based on query keys.
+- **Prefetching**: Data for subsequent pages or related queries can be prefetched using the `prefetchQuery` method to ensure smooth transitions and immediate availability.
+
+### Image Cache
+
+A custom `ImageCache` utility is used to cache player images locally. This helps in reducing the load times for images that have already been fetched.
+
+- **Load Image**: Images are fetched and stored in the cache when first requested.
+- **Get Image**: Subsequent requests for the same image retrieve it from the cache.
+
+### Cache Size Widget
+
+The application includes a floating widget to monitor the sizes of the React Query cache and the image cache.
+
+#### Features of the Cache Size Widget
+
+- **Real-Time Updates**: The widget updates in real-time to show the current number of entries and size of the caches.
+- **Draggable**: Users can drag the widget to any position on the screen.
+- **Minimizable**: The widget can be minimized to an icon in the top-right corner of the screen.
+- **Stop Interval on Minimize**: When minimized, the widget stops updating to reduce resource usage.
 
 ## Goals
 
