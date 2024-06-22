@@ -3,7 +3,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "./services/queryClient";
 import { PlayerManagement } from "./components/PlayerManagement";
-import { FavoriteListTest } from "./components/FavoriteList";
+import { FavoriteList } from "./components/FavoriteList";
 import { Layout } from "./components/Layout";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import useOnlineStatus from "./hooks/useOnlineStatus";
@@ -69,7 +69,7 @@ function App() {
                   <PlayerManagement />
                 </div>
                 <div className="h-full xl:col-span-2 md:row-span-5 row-span-1">
-                  <FavoriteListTest />
+                  <FavoriteList />
                 </div>
               </div>
             </Layout>

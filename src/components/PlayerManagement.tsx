@@ -1,80 +1,59 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPlayersData, PlayersInfoResponse } from "../api";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchPlayersData } from "../api";
 import { IMeta, IPlayer } from "../types";
 import { PlayersDialog } from "./PlayersDialog";
 import { initiateCurser, initiateItemsPerPage, debouncedDelay } from "../utils";
 import { useDebounce } from "../hooks/useDebounce";
 import { QUERY_KEYS } from "../services/queryKeys";
+import { prefetchPlayersNextPage } from "../services/playerDataQueries";
 
 export const PlayerManagement = () => {
   const queryClient = useQueryClient();
   const [nextCursor, setNextCursor] = useState<number>(initiateCurser);
-  const [itemsPerPage, setItemsPerPage] = useState(initiateItemsPerPage);
-  const [queryStr, setQueryStr] = useState("");
+  const [itemsPerPage, setItemsPerPage] =
+    useState<number>(initiateItemsPerPage);
+  const [queryStr, setQueryStr] = useState<string>("");
   const deferredQueryStr = useDebounce(queryStr, debouncedDelay);
-  const [isNextPageDisabled, setIsNextPageDisabled] = useState(true);
+  const [isNextPageDisabled, setIsNextPageDisabled] = useState<boolean>(true);
+
+  const queryKey = useMemo(
+    () => QUERY_KEYS.PLAYERS(nextCursor, itemsPerPage, deferredQueryStr),
+    [nextCursor, itemsPerPage, deferredQueryStr]
+  );
 
   const { isLoading, isError, error, data } = useQuery({
-    queryKey: QUERY_KEYS.PLAYERS(nextCursor, itemsPerPage, deferredQueryStr),
+    queryKey,
     queryFn: () => fetchPlayersData(nextCursor, itemsPerPage, deferredQueryStr),
   });
 
   const players: IPlayer[] = data?.data || [];
   const meta: IMeta | undefined = data?.meta;
-  const isPreviousPageDisabled = meta?.prev_cursor == undefined;
+  const isPreviousPageDisabled = meta?.prev_cursor === undefined;
 
-  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setQueryStr(event.target.value);
     setNextCursor(initiateCurser);
-  };
-
-  const prefetchPlayersData = async (
-    queryClient: QueryClient,
-    meta: IMeta,
-    itemsPerPage: number,
-    deferredQueryStr: string
-  ) => {
-    const playersNextPageKey = QUERY_KEYS.PLAYERS(
-      meta?.next_cursor,
-      itemsPerPage,
-      deferredQueryStr
-    );
-    await queryClient.prefetchQuery({
-      queryKey: playersNextPageKey,
-      queryFn: () =>
-        fetchPlayersData(meta?.next_cursor, itemsPerPage, deferredQueryStr),
-      staleTime: 5 * 1000 * 60,
-      gcTime: 10 * 1000 * 60,
-    });
-
-    const prefetchedData: PlayersInfoResponse | undefined =
-      queryClient.getQueryData(playersNextPageKey);
-    if (prefetchedData?.data && prefetchedData.data.length > 0) {
-      setIsNextPageDisabled(false);
-    } else {
-      setIsNextPageDisabled(true);
-    }
-  };
+  }, []);
 
   useEffect(() => {
-    if (meta?.next_cursor) {
-      prefetchPlayersData(queryClient, meta, itemsPerPage, deferredQueryStr);
+    if (meta?.next_cursor !== undefined) {
+      prefetchPlayersNextPage(
+        queryClient,
+        meta,
+        itemsPerPage,
+        deferredQueryStr,
+        setIsNextPageDisabled
+      );
     } else {
       setIsNextPageDisabled(true);
     }
-  }, [
-    queryClient,
-    meta?.next_cursor,
-    deferredQueryStr,
-    isNextPageDisabled,
-    itemsPerPage,
-  ]);
+  }, [queryClient, meta, deferredQueryStr, itemsPerPage]);
 
   return (
     <PlayersDialog
       title="Explore New Players"
-      searchText={"Search in DB"}
+      searchText="Search in DB"
       setNextCursor={setNextCursor}
       nextCursor={nextCursor}
       queryStr={queryStr}
@@ -87,12 +66,12 @@ export const PlayerManagement = () => {
       isLoading={isLoading}
       isError={isError}
       error={error}
-      players={players || []}
+      players={players}
       meta={meta}
       notFound={
         <h1 className="my-3 text-warning font-bold text-xl">
           {deferredQueryStr
-            ? `No Player Found match to the search '${deferredQueryStr}`
+            ? `No Player Found matching the search '${deferredQueryStr}'`
             : "No Data Found"}
         </h1>
       }

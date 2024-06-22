@@ -1,4 +1,4 @@
-import { FetchError, IMeta, IPlayer, IStats } from "./types";
+import { FetchError, IMeta, IPlayer, IStats, PlayersInfoResponse, StatsResponse } from "./types";
 import * as ls from "./secureLS";
 const API_BASE_URL = "https://api.balldontlie.io/v1";
 
@@ -19,14 +19,6 @@ const getHeaders = (): HeadersInit => {
   };
 };
 
-export interface PlayersInfoResponse {
-  data: IPlayer[];
-  meta: IMeta;
-}
-
-export interface StatsResponse {
-  data: IStats[];
-}
 
 const buildPlayerQuery = (favorites: number[]) =>
   favorites.map((id) => `player_ids[]=${id}`).join("&");

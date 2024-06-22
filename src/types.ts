@@ -54,6 +54,16 @@ export interface IStats {
   season: number;
 }
 
+
+export interface PlayersInfoResponse {
+  data: IPlayer[];
+  meta: IMeta;
+}
+
+export interface StatsResponse {
+  data: IStats[];
+}
+
 export class FetchError extends Error {
   status: number;
   retryAfter?: string;

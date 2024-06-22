@@ -1,117 +1,50 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  fetchPlayersData,
-  fetchPlayersStats,
-  PlayersInfoResponse,
-} from "../api";
-import { IMeta, IPlayer } from "../types";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { PlayersDialog } from "./PlayersDialog";
 import { useDebounce } from "../hooks/useDebounce";
-import { QUERY_KEYS } from "../services/queryKeys";
 import { debouncedDelay, initiateCurser, initiateItemsPerPage } from "../utils";
 import { useFavorites } from "../hooks/useFavorites";
+import { useFavoritesPlayersQueries } from "../hooks/useFavoritesPlayersQueries";
+import { prefetchPlayersNextPage } from "../services/playerDataQueries";
 
-export const FavoriteListTest = () => {
-  const { favorites } = useFavorites();
-  return <FavoriteList favorites={favorites} />;
-};
-
-export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
+export const FavoriteList = () => {
   const queryClient = useQueryClient();
   const [nextCursor, setNextCursor] = useState<number>(initiateCurser);
-  const [itemsPerPage, setItemsPerPage] = useState(initiateItemsPerPage);
-  const [queryStr, setQueryStr] = useState("");
+  const [itemsPerPage, setItemsPerPage] = useState<number>(initiateItemsPerPage);
+  const [queryStr, setQueryStr] = useState<string>("");
   const debouncedQueryStr = useDebounce(queryStr, debouncedDelay);
-  const [isNextPageDisabled, setIsNextPageDisabled] = useState(true);
+  const [isNextPageDisabled, setIsNextPageDisabled] = useState<boolean>(true);
+  const { favorites } = useFavorites();
 
-  const playersDataQuery = useQuery({
-    queryKey: QUERY_KEYS.FAVORITES(
-      nextCursor,
-      itemsPerPage,
-      debouncedQueryStr,
-      favorites
-    ),
-    queryFn: () =>
-      fetchPlayersData(nextCursor, itemsPerPage, debouncedQueryStr, favorites),
-    enabled: favorites && favorites.length > 0,
-  });
+  const { playersDataQuery, playersStateQuery } = useFavoritesPlayersQueries(
+    nextCursor,
+    itemsPerPage,
+    debouncedQueryStr,
+    favorites
+  );
 
-  const playersStateQuery = useQuery({
-    queryKey: QUERY_KEYS.STATS(
-      nextCursor,
-      itemsPerPage,
-      debouncedQueryStr,
-      favorites
-    ),
-    queryFn: () =>
-      fetchPlayersStats(nextCursor, itemsPerPage, debouncedQueryStr, favorites),
-    enabled: favorites && favorites.length > 0,
-  });
+  const { players, meta } = useMemo(() => {
+    const players = favorites?.length > 0 ? playersDataQuery?.data?.data || [] : [];
+    const meta = favorites?.length > 0 ? playersDataQuery?.data?.meta : undefined;
+    return { players, meta };
+  }, [playersDataQuery?.data, favorites]);
 
-  const players: IPlayer[] =
-    favorites && favorites.length > 0 ? playersDataQuery?.data?.data || [] : [];
-  const meta: IMeta | undefined =
-    favorites && favorites.length > 0
-      ? playersDataQuery?.data?.meta
-      : undefined;
-
-  const isPreviousPageDisabled = meta?.prev_cursor == undefined;
-
-  const prefetchPlayersData = async (
-    queryClient: QueryClient,
-    meta: IMeta,
-    itemsPerPage: number,
-    debouncedQueryStr: string,
-    favorites: number[]
-  ) => {
-    if (!favorites) return;
-    const nextFavoritesPageKey = QUERY_KEYS.FAVORITES(
-      meta?.next_cursor,
-      itemsPerPage,
-      debouncedQueryStr,
-      favorites
-    );
-
-    await queryClient.prefetchQuery({
-      queryKey: nextFavoritesPageKey,
-      queryFn: () =>
-        fetchPlayersData(
-          meta?.next_cursor,
-          itemsPerPage,
-          debouncedQueryStr,
-          favorites
-        ),
-    });
-
-    const prefetchedData: PlayersInfoResponse | undefined =
-      queryClient.getQueryData(nextFavoritesPageKey);
-    if (prefetchedData?.data && prefetchedData.data.length > 0) {
-      setIsNextPageDisabled(false);
-    } else {
-      setIsNextPageDisabled(true);
-    }
-  };
+  const isPreviousPageDisabled = meta?.prev_cursor === undefined;
 
   useEffect(() => {
-    if (meta?.next_cursor && favorites && favorites.length > 0) {
-      prefetchPlayersData(
+    if (meta?.next_cursor !== undefined && favorites.length > 0) {
+      prefetchPlayersNextPage(
         queryClient,
         meta,
         itemsPerPage,
         debouncedQueryStr,
-        favorites
+        setIsNextPageDisabled,
+        favorites,
       );
     } else {
       setIsNextPageDisabled(true);
     }
-  }, [
-    queryClient,
-    meta?.next_cursor,
-    debouncedQueryStr,
-    itemsPerPage,
-    favorites,
-  ]);
+  }, [queryClient, meta, debouncedQueryStr, itemsPerPage, favorites]);
 
   return (
     <PlayersDialog
@@ -136,7 +69,7 @@ export const FavoriteList = ({ favorites }: { favorites: number[] }) => {
       playersState={playersStateQuery?.data?.data}
       meta={meta}
       notFound={
-        favorites && favorites.length > 0 ? (
+        favorites.length > 0 ? (
           <h1 className="text-warning font-bold text-xl">No Data Found</h1>
         ) : (
           <>
